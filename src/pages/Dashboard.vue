@@ -211,7 +211,7 @@
       </div>
     </div>
     <div class="row q-px-lg text-subtitle1 text-weight-medium text-dark">
-      <div class="column col-8">
+      <div class="column col-12">
         <q-card style="border-radius: 20px">
           <q-dialog v-model="viewUserDialog">
             <q-card>
@@ -230,6 +230,7 @@
                 <div style="width: 100%" class="row justify-center">
                   <q-img
                     :src="selectedUser.pfp"
+                    error-src="../assets/error-placeholder.jpg"
                     style="width: 150px; height: 150px; border-radius: 10px"
                     spinner-color="primary"
                     fit="cover"
@@ -346,6 +347,7 @@
                 <div style="width: 100%" class="row justify-center">
                   <q-img
                     :src="selectedSeller.sellerPicture"
+                    error-src="../assets/error-placeholder.jpg"
                     style="width: 150px; height: 150px; border-radius: 10px"
                     spinner-color="primary"
                     fit="cover"
@@ -706,7 +708,6 @@
               <q-card-actions align="right">
                 <q-btn
                   v-if="selectedRefund.status === 'Pending'"
-                  flat
                   label="Accept"
                   color="positive"
                   v-close-popup
@@ -723,7 +724,6 @@
                 />
                 <q-btn
                   v-if="selectedRefund.status === 'Pending'"
-                  flat
                   label="Decline"
                   color="negative"
                   v-close-popup
@@ -751,7 +751,7 @@
               <q-separator />
 
               <q-card-section
-                style="max-height: 50vh; width: 500px"
+                style="max-height: 50vh; width: 550px"
                 class="scroll"
               >
                 <div class="row q-mb-md">
@@ -767,7 +767,10 @@
                   </div>
                 </div>
                 <div class="row q-mb-md">
-                  <div class="row justify-between" style="width: 150px">
+                  <div
+                    class="row justify-between items-center"
+                    style="width: 150px"
+                  >
                     <div>Order ID</div>
                     <div>:</div>
                   </div>
@@ -776,6 +779,15 @@
                     style="max-width: 330px"
                   >
                     {{ selectedShipment.orderId ?? "-" }}
+                    <q-btn
+                      style="text-decoration: underline"
+                      label="Track"
+                      color="blue"
+                      class="q-mx-sm"
+                      dense
+                      flat
+                      @click="trackOrder(selectedShipment.orderId)"
+                    ></q-btn>
                   </div>
                 </div>
                 <div class="row q-mb-md">
@@ -892,6 +904,7 @@
               <q-table
                 :rows="processRows"
                 :columns="processesColumns"
+                :loading="processLoading"
                 row-key="processId"
                 :rows-per-page-options="[10, 15, 25, 50, 100]"
                 flat
@@ -968,6 +981,7 @@
               <div class="q-mb-md">
                 <q-table
                   :rows="refundRows"
+                  :loading="refundLoading"
                   :columns="refundsColumns"
                   row-key="refundId"
                   :rows-per-page-options="[10, 15, 25, 50, 100]"
@@ -1036,6 +1050,7 @@
               <div class="q-mb-md">
                 <q-table
                   :rows="shipmentRows"
+                  :loading="shipmentLoading"
                   :columns="shipmentsColumns"
                   row-key="shipmentId"
                   :rows-per-page-options="[10, 15, 25, 50, 100]"
@@ -1106,111 +1121,16 @@
             </q-tab-panel>
           </q-tab-panels>
         </q-card>
-
-        <!-- <div class="row q-mb-md">
-          <div
-            class="col column bg-white shadow-3 q-mr-sm q-px-md items-around justify-center"
-            style="border-radius: 10px; height: 100px"
-          >
-            <div class="text-caption">Packing Rate</div>
-            <div class="text-h6 text-weight-bold">78%</div>
-            <q-linear-progress
-              :value="0.78"
-              color="secondary"
-              class="q-mt-sm"
-              size="md"
-              rounded
-            />
-          </div>
-          <div
-            class="col bg-white shadow-3 q-mx-sm q-px-md column items-around justify-center"
-            style="border-radius: 10px; height: 100px"
-          >
-            <div class="text-caption">On-time Delivery</div>
-            <div class="text-h6 text-weight-bold">92%</div>
-            <q-linear-progress
-              :value="0.92"
-              color="blue"
-              class="q-mt-sm"
-              size="md"
-              rounded
-            />
-          </div>
-          <div
-            class="col bg-white shadow-3 q-ml-sm q-px-md column items-around justify-center"
-            style="border-radius: 10px; height: 100px"
-          >
-            <div class="text-caption">Bind Rate (QR -> Product)</div>
-            <div class="text-h6 text-weight-bold">34%</div>
-            <q-linear-progress
-              :value="0.34"
-              color="orange"
-              class="q-mt-sm"
-              size="md"
-              rounded
-            />
-          </div>
-        </div> -->
       </div>
 
-      <div class="column col-4">
+      <!-- <div class="column col-2 justify-end">
         <div
-          class="column bg-white q-ml-md q-pa-md shadow-3 q-mb-md"
+          class="row bg-white q-ml-md q-pa-md q-mb-md"
           style="width: 100%; border-radius: 10px"
         >
-          <div class="q-mb-sm text-subtitle2" style="color: #083f19">
-            Recent Activity
-          </div>
-          <div class="text-caption q-mb-sm text-grey-7">
-            DO 542881667 assigned to Truck B 7113 -- 15:45
-          </div>
-          <div class="text-caption q-mb-sm text-grey-7">
-            QR Batch #320 (420 pcs) still unbound -- 12:30
-          </div>
-          <div class="text-caption q-mb-sm text-grey-7">
-            PO #PO-99123 (Marshal 25EC) updated -- 11:05
-          </div>
-          <div class="text-caption q-mb-sm text-grey-7">
-            DO 542881667 delayed due to delayed stock -- 09:50
-          </div>
+          <q-img src="../assets/Buatin Logo.jpeg"></q-img>
         </div>
-        <div
-          class="column bg-white q-ml-md q-py-md shadow-3 q-mb-md"
-          style="width: 100%; border-radius: 10px"
-        >
-          <div class="q-mb-sm text-subtitle2 q-ml-md" style="color: #083f19">
-            Delivery Order Products
-          </div>
-          <q-table
-            :rows="[]"
-            :columns="deliverOrdersProductColumns"
-            :rows-per-page-options="[10, 15, 25, 50, 100]"
-            flat
-            style="border-radius: 20px"
-            dense
-          >
-          </q-table>
-        </div>
-        <div
-          class="column bg-white q-ml-md q-py-md shadow-3"
-          style="width: 100%; border-radius: 10px"
-        >
-          <div class="q-mb-sm text-subtitle2 q-ml-md" style="color: #083f19">
-            Warehouse QR Stock Overview
-          </div>
-          <q-table
-            :rows="stockOverviewRows"
-            :columns="stockOverviewColumns"
-            row-key="noDo"
-            :rows-per-page-options="[10, 15, 25, 50, 100]"
-            flat
-            style="border-radius: 20px"
-            dense
-            separator="none"
-          >
-          </q-table>
-        </div>
-      </div>
+      </div> -->
     </div>
   </q-page>
 </template>
@@ -1219,7 +1139,7 @@
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import axios from "axios";
-import { QTableColumn, useQuasar } from "quasar";
+import { QSpinnerFacebook, QTableColumn, useQuasar } from "quasar";
 import {
   ProcessItem,
   RefundItem,
@@ -1466,6 +1386,10 @@ const refundRows = ref<RefundItem[]>([]);
 const processRows = ref<ProcessItem[]>([]);
 const shipmentRows = ref<ShipmentItem[]>([]);
 
+const refundLoading = ref(false);
+const processLoading = ref(false);
+const shipmentLoading = ref(false);
+
 const viewRefundDialog = ref(false);
 const viewProcessDialog = ref(false);
 const viewShipmentDialog = ref(false);
@@ -1530,6 +1454,8 @@ async function processRefund(refundId: string, answer: string) {
       `${process.env.API_URL}/api/v1/respond-refund-request`,
       payload
     );
+    refundRows.value.find((refund) => refund.refundId === refundId).status =
+      answer;
   } catch (error) {
     console.error(error);
   }
@@ -1598,6 +1524,9 @@ const fetchProcesses = async () => {
     });
   } catch (error) {
     console.error(error);
+    processLoading.value = false;
+  } finally {
+    processLoading.value = false;
   }
 };
 
@@ -1623,6 +1552,33 @@ const fetchRefunds = async () => {
     });
   } catch (error) {
     console.error(error);
+    refundLoading.value = false;
+  } finally {
+    refundLoading.value = false;
+  }
+};
+
+const trackOrder = async (orderId: string) => {
+  $q.loading.show({
+    spinner: QSpinnerFacebook,
+  });
+  try {
+    const response = await axios.get(
+      `${process.env.API_URL}/api/v1/track-order?OrderId=${orderId}`
+    );
+    const url = response.data.courier.link;
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error(error);
+    $q.loading.hide();
+  } finally {
+    $q.loading.hide();
   }
 };
 
@@ -1637,6 +1593,9 @@ const fetchShipments = async () => {
       : [];
   } catch (error) {
     console.error(error);
+    shipmentLoading.value = false;
+  } finally {
+    shipmentLoading.value = false;
   }
 };
 
@@ -1659,6 +1618,11 @@ const syncUp = async () => {
   fetchedShipments.value = undefined;
   shipmentRows.value = [];
   lastSync.value = getCurrentDateTime();
+
+  refundLoading.value = true;
+  processLoading.value = true;
+  shipmentLoading.value = true;
+
   await fetchProcesses();
   await fetchShipments();
   await fetchOnlineUsers();

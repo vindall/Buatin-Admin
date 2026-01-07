@@ -24,25 +24,7 @@
           >
           </q-btn>
 
-          <q-btn round flat>
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-            </q-avatar>
-            <q-menu>
-              <q-list style="min-width: 100px">
-                <q-card class="text-center no-shadow no-border">
-                  <q-btn
-                    to="/Login"
-                    label="Log Out"
-                    style="max-width: 120px; color: red !important"
-                    flat
-                    dense
-                    class="text-indigo-8"
-                  ></q-btn>
-                </q-card>
-              </q-list>
-            </q-menu>
-          </q-btn>
+          <q-btn label="Exit" color="negative"> </q-btn>
         </div>
       </q-toolbar>
     </q-header>
