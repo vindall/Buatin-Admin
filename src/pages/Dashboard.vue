@@ -712,14 +712,16 @@
                   color="positive"
                   v-close-popup
                   @click="
-                    $q.dialog({
-                      title: 'Confirm',
-                      message: 'Would you like accept the refund?',
-                      cancel: true,
-                      persistent: true,
-                    }).onOk(() => {
-                      processRefund(selectedRefund.refundId, 'Accepted');
-                    })
+                    $q
+                      .dialog({
+                        title: 'Confirm',
+                        message: 'Would you like accept the refund?',
+                        cancel: true,
+                        persistent: true,
+                      })
+                      .onOk(() => {
+                        processRefund(selectedRefund.refundId, 'Accepted');
+                      })
                   "
                 />
                 <q-btn
@@ -728,14 +730,16 @@
                   color="negative"
                   v-close-popup
                   @click="
-                    $q.dialog({
-                      title: 'Confirm',
-                      message: 'Would you like decline the refund?',
-                      cancel: true,
-                      persistent: true,
-                    }).onOk(() => {
-                      processRefund(selectedRefund.refundId, 'Declined');
-                    })
+                    $q
+                      .dialog({
+                        title: 'Confirm',
+                        message: 'Would you like decline the refund?',
+                        cancel: true,
+                        persistent: true,
+                      })
+                      .onOk(() => {
+                        processRefund(selectedRefund.refundId, 'Declined');
+                      })
                   "
                 />
                 <q-btn flat label="Close" color="primary" v-close-popup />
@@ -1452,7 +1456,7 @@ async function processRefund(refundId: string, answer: string) {
     };
     await axios.put(
       `${process.env.API_URL}/api/v1/respond-refund-request`,
-      payload
+      payload,
     );
     refundRows.value.find((refund) => refund.refundId === refundId).status =
       answer;
@@ -1508,7 +1512,7 @@ const formatDate = (raw: string) => {
 const fetchProcesses = async () => {
   try {
     const response = await axios.get(
-      `${process.env.API_URL}/api/v1/get-all-processes`
+      `${process.env.API_URL}/api/v1/get-all-processes`,
     );
     fetchedProcess.value = response.data;
     processRows.value = Array.isArray(fetchedProcess.value.processes)
@@ -1533,7 +1537,7 @@ const fetchProcesses = async () => {
 const fetchRefunds = async () => {
   try {
     const response = await axios.get(
-      `${process.env.API_URL}/api/v1/get-all-refunds`
+      `${process.env.API_URL}/api/v1/get-all-refunds`,
     );
     fetchedRefunds.value = response.data;
     console.log(fetchedRefunds);
@@ -1564,7 +1568,7 @@ const trackOrder = async (orderId: string) => {
   });
   try {
     const response = await axios.get(
-      `${process.env.API_URL}/api/v1/track-order?OrderId=${orderId}`
+      `${process.env.API_URL}/api/v1/track-order?OrderId=${orderId}`,
     );
     const url = response.data.courier.link;
     const a = document.createElement("a");
@@ -1585,7 +1589,7 @@ const trackOrder = async (orderId: string) => {
 const fetchShipments = async () => {
   try {
     const response = await axios.get(
-      `${process.env.API_URL}/api/v1/get-all-shipments`
+      `${process.env.API_URL}/api/v1/get-all-shipments`,
     );
     fetchedShipments.value = response.data;
     shipmentRows.value = Array.isArray(fetchedShipments.value.shipments)
@@ -1602,7 +1606,7 @@ const fetchShipments = async () => {
 const fetchOnlineUsers = async () => {
   try {
     const response = await axios.get(
-      "http://localhost:5026/api/v1/get-all-logged-in-users"
+      `${process.env.API_URL}/api/v1/get-all-logged-in-users`,
     );
     fetchedOnlineUsers.value = response.data;
   } catch (error) {
