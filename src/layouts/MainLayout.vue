@@ -2,14 +2,6 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <!-- <q-btn
-          flat
-          dense
-          round
-          @click="toggleLeftDrawer"
-          icon="menu"
-          aria-label="Menu"
-        /> -->
         <q-toolbar-title> Buatin Admin </q-toolbar-title>
         <q-space />
         <div class="q-gutter-sm row items-center no-wrap">
