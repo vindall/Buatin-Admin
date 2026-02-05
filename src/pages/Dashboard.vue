@@ -928,6 +928,14 @@
                 <template v-slot:body-cell-status="props">
                   <q-td :props="props">
                     <q-badge
+                      v-if="props.row.status === 'Created'"
+                      rounded
+                      color="orange-1"
+                      text-color="orange"
+                      :label="props.row.status"
+                      class="text-weight-medium"
+                    />
+                    <q-badge
                       v-if="props.row.status === 'In Progress'"
                       rounded
                       color="green-1"
@@ -1140,6 +1148,7 @@
 </template>
 
 <script setup lang="ts">
+import { QPage } from "quasar";
 import { computed, onMounted } from "vue";
 import { ref } from "vue";
 import axios from "axios";
@@ -1519,6 +1528,7 @@ const fetchProcesses = async () => {
       ? fetchedProcess.value.processes
       : [];
     const statusOrder: Record<string, number> = {
+      Created: -1,
       "In Progress": 0,
       Cancelled: 1,
       Completed: 2,
@@ -1526,6 +1536,7 @@ const fetchProcesses = async () => {
     processRows.value.sort((a, b) => {
       return statusOrder[a.status] - statusOrder[b.status];
     });
+    console.log(processRows.value);
   } catch (error) {
     console.error(error);
     processLoading.value = false;
@@ -1540,7 +1551,6 @@ const fetchRefunds = async () => {
       `${process.env.API_URL}/api/v1/get-all-refunds`,
     );
     fetchedRefunds.value = response.data;
-    console.log(fetchedRefunds);
     refundRows.value = Array.isArray(fetchedRefunds.value.refundRequests)
       ? fetchedRefunds.value.refundRequests
       : [];
@@ -1634,7 +1644,6 @@ const syncUp = async () => {
 };
 
 onMounted(() => {
-  console.log(process.env.API_URL);
   syncUp();
 });
 </script>

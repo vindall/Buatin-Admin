@@ -15,8 +15,6 @@
             v-if="$q.screen.gt.sm"
           >
           </q-btn>
-
-          <q-btn label="Exit" color="negative"> </q-btn>
         </div>
       </q-toolbar>
     </q-header>
@@ -28,6 +26,17 @@
 
 <script setup lang="js">
 import { useQuasar } from "quasar";
+import {
+  QLayout,
+  QHeader,
+  QToolbar,
+  QToolbarTitle,
+  QBtn,
+  QSpace,
+  QPageContainer,
+} from "quasar";
+
+console.log("MainLayout loaded");
 
 const $q = useQuasar();
 </script>
